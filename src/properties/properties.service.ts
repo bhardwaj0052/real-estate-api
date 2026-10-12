@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
 import { Property } from './schemas/property.schema';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyStatusDto } from './dto/update-property-status.dto';
 import { User } from 'src/user/schema/userSchema';
+import { SavedProperty } from 'src/saved-properties/schemas/saved-property.schema';
 
 @Injectable()
 export class PropertiesService {
@@ -18,6 +18,8 @@ export class PropertiesService {
     private readonly propertyModel: Model<Property>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+    @InjectModel(SavedProperty.name)
+    private readonly saveModel: Model<SavedProperty>,
   ) {}
   async findAllProperties(userId: string, role: string) {
     try {
@@ -140,6 +142,7 @@ export class PropertiesService {
         id: id,
         ownerId,
       });
+      await this.saveModel.findOneAndDelete({ propertyId: id });
 
       if (!property) {
         throw new NotFoundException('Property not found');

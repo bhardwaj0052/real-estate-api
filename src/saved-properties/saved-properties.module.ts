@@ -22,5 +22,6 @@ import { SavedPropertiesController } from './saved-properties.controller';
   ],
   controllers: [SavedPropertiesController],
   providers: [SavedPropertiesService],
+  exports: [MongooseModule],
 })
 export class SavedPropertiesModule {}
